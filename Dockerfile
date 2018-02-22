@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM ubuntu:16.04
+FROM centos:7
 
 LABEL maintainer "Arthur Barr <arthur.barr@uk.ibm.com>, Rob Parker <PARROBE@uk.ibm.com>"
 
@@ -26,10 +26,8 @@ ARG MQ_URL=https://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/messag
 # The MQ packages to install
 ARG MQ_PACKAGES="ibmmq-server ibmmq-java ibmmq-jre ibmmq-gskit ibmmq-web ibmmq-msg-.*"
 
-RUN export DEBIAN_FRONTEND=noninteractive \
-  # Install additional packages required by MQ, this install process and the runtime scripts
-  && apt-get update -y \
-  && apt-get install -y --no-install-recommends \
+RUN yum update -y \
+  && yum install -y --no-install-recommends \
     bash \
     bc \
     ca-certificates \
@@ -55,11 +53,11 @@ RUN export DEBIAN_FRONTEND=noninteractive \
   && curl -LO $MQ_URL \
   && tar -zxvf ./*.tar.gz \
   # Recommended: Remove packages only needed by this script
-  && apt-get purge -y \
+  && yum purge -y \
     ca-certificates \
     curl \
   # Recommended: Remove any orphaned packages
-  && apt-get autoremove -y --purge \
+  && yum autoremove -y --purge \
   # Recommended: Create the mqm user ID with a fixed UID and group, so that the file permissions work between different images
   && groupadd --system --gid 999 mqm \
   && useradd --system --uid 999 --gid mqm mqm \
@@ -72,8 +70,8 @@ RUN export DEBIAN_FRONTEND=noninteractive \
   && ${MQLICENSE} -text_only -accept \
   && echo "deb [trusted=yes] file:${DIR_DEB} ./" > /etc/apt/sources.list.d/IBM_MQ.list \
   # Install MQ using the DEB packages
-  && apt-get update \
-  && apt-get install -y $MQ_PACKAGES \
+  && yum update -y \
+  && yum install -y $MQ_PACKAGES \
   # Remove 32-bit libraries from 64-bit container
   && find /opt/mqm /var/mqm -type f -exec file {} \; \
     | awk -F: '/ELF 32-bit/{print $1}' | xargs --no-run-if-empty rm -f \
@@ -86,7 +84,7 @@ RUN export DEBIAN_FRONTEND=noninteractive \
   && rm -rf ${DIR_EXTRACT} \
   # Apply any bug fixes not included in base Ubuntu or MQ image.
   # Don't upgrade everything based on Docker best practices https://docs.docker.com/engine/userguide/eng-image/dockerfile_best-practices/#run
-  && apt-get upgrade -y gcc-5-base libstdc++6 \
+  && yum upgrade -y gcc-5-base libstdc++6 \
   # End of bug fixes
   && rm -rf /var/lib/apt/lists/* \
   # Optional: Update the command prompt with the MQ version
