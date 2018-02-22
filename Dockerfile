@@ -88,7 +88,7 @@ RUN yum update -y \
   # End of bug fixes
   && rm -rf /var/lib/apt/lists/* \
   # Optional: Update the command prompt with the MQ version
-  && echo "mq:$(dspmqver -b -f 2)" > /etc/debian_chroot \
+  && echo "mq:$(dspmqver -b -f 2)" > /etc/mq-version \
   && rm -rf /var/mqm \
   # Optional: Set these values for the Bluemix Vulnerability Report
   && sed -i 's/PASS_MAX_DAYS\t99999/PASS_MAX_DAYS\t90/' /etc/login.defs \
