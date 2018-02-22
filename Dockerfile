@@ -27,7 +27,7 @@ ARG MQ_URL=https://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/messag
 ARG MQ_PACKAGES="ibmmq-server ibmmq-java ibmmq-jre ibmmq-gskit ibmmq-web ibmmq-msg-.*"
 
 RUN yum update -y \
-  && yum install -y --no-install-recommends \
+  && yum install -y \
     bash \
     bc \
     ca-certificates \
@@ -57,7 +57,7 @@ RUN yum update -y \
     ca-certificates \
     curl \
   # Recommended: Remove any orphaned packages
-  && yum autoremove -y --purge \
+
   # Recommended: Create the mqm user ID with a fixed UID and group, so that the file permissions work between different images
   && groupadd --system --gid 999 mqm \
   && useradd --system --uid 999 --gid mqm mqm \
