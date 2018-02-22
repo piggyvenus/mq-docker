@@ -53,7 +53,7 @@ RUN yum update -y \
   && curl -LO $MQ_URL \
   && tar -zxvf ./*.tar.gz \
   # Recommended: Remove packages only needed by this script
-  && yum purge -y \
+  && yum remove -y \
     ca-certificates \
     curl \
   # Recommended: Remove any orphaned packages
