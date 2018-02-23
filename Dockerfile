@@ -33,7 +33,7 @@ RUN yum update -y \
     ca-certificates \
     coreutils \
     curl \
-    debianutils \
+    groupinstall \
     file \
     findutils \
     gawk \
