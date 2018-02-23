@@ -51,13 +51,13 @@ RUN yum update -y \
     procps \
     sed \
     tar \
-    util-linux \
+    util-linux 
   # Download and extract the MQ installation files
-  && export DIR_EXTRACT=/tmp/mq \
+ RUN export DIR_EXTRACT=/tmp/mq \
   && mkdir -p ${DIR_EXTRACT} \ 
   && cd ${DIR_EXTRACT} \
   && curl -LO $MQ_URL \
-  && tar -zxvf ./*.tar.gz 
+  && tar -zxvf ./*.tar.gz \
   # Recommended: Remove packages only needed by this script
   #&& yum remove -y \
   #  ca-certificates \
@@ -65,7 +65,7 @@ RUN yum update -y \
   # Recommended: Remove any orphaned packages
 
   # Recommended: Create the mqm user ID with a fixed UID and group, so that the file permissions work between different images
- RUN groupadd --system --gid 999 mqm \
+  && groupadd --system --gid 999 mqm \
   && useradd --system --uid 999 --gid mqm mqm \
   && usermod -G mqm root \
   # Find directory containing .deb files
