@@ -67,19 +67,19 @@ RUN yum update -y \
   # Recommended: Create the mqm user ID with a fixed UID and group, so that the file permissions work between different images
   && groupadd --system --gid 999 mqm \
   && useradd --system --uid 999 --gid mqm mqm \
-  && usermod -G mqm root \
+  && usermod -G mqm root 
   # Find directory containing .deb files
-  && export DIR_DEB=$(find ${DIR_EXTRACT} -name "*.deb" -printf "%h\n" | sort -u | head -1) \
+  RUN export DIR_DEB=$(find ${DIR_EXTRACT} -name "*.deb" -printf "%h\n" | sort -u | head -1) \
   # Find location of mqlicense.sh
   && export MQLICENSE=$(find ${DIR_EXTRACT} -name "mqlicense.sh") \
   # Accept the MQ license
   && ${MQLICENSE} -text_only -accept \
-  && echo "deb [trusted=yes] file:${DIR_DEB} ./" > /etc/apt/sources.list.d/IBM_MQ.list \
+  && echo "deb [trusted=yes] file:${DIR_DEB} ./" > /etc/apt/sources.list.d/IBM_MQ.list 
   # Install MQ using the DEB packages
-  && yum update -y \
-  && yum install -y $MQ_PACKAGES \
+  RUN yum update -y \
+  && yum install -y $MQ_PACKAGES 
   # Remove 32-bit libraries from 64-bit container
-  && find /opt/mqm /var/mqm -type f -exec file {} \; \
+  RUN find /opt/mqm /var/mqm -type f -exec file {} \; \
     | awk -F: '/ELF 32-bit/{print $1}' | xargs --no-run-if-empty rm -f \
   # Remove tar.gz files unpacked by RPM postinst scripts
   && find /opt/mqm -name '*.tar.gz' -delete \
@@ -87,10 +87,10 @@ RUN yum update -y \
   && /opt/mqm/bin/setmqinst -p /opt/mqm -i \
   # Clean up all the downloaded files
   && rm -f /etc/apt/sources.list.d/IBM_MQ.list \
-  && rm -rf ${DIR_EXTRACT} \
+  && rm -rf ${DIR_EXTRACT} 
   # Apply any bug fixes not included in base Ubuntu or MQ image.
   # Don't upgrade everything based on Docker best practices https://docs.docker.com/engine/userguide/eng-image/dockerfile_best-practices/#run
-  && yum upgrade -y gcc-5-base libstdc++6 \
+  RUN yum upgrade -y gcc-5-base libstdc++6 \
   # End of bug fixes
   && rm -rf /var/lib/apt/lists/* \
   # Optional: Update the command prompt with the MQ version
