@@ -33,7 +33,13 @@ RUN yum update -y \
     ca-certificates \
     coreutils \
     curl \
-    groupinstall \
+    wget \
+    git \
+    net-tools \
+    bind-utils \
+    bridge-utils \
+    bash-completion \
+    kexec-tools \
     file \
     findutils \
     gawk \
