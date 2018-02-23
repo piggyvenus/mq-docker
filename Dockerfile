@@ -65,8 +65,8 @@ RUN yum update -y \
   # Recommended: Remove any orphaned packages
 
   # Recommended: Create the mqm user ID with a fixed UID and group, so that the file permissions work between different images
-  && groupadd --system --gid 999 mqm \
-  && useradd --system --uid 999 --gid mqm mqm \
+  && groupadd --gid 999 mqm \
+  && useradd --uid 999 --gid mqm mqm \
   && usermod -G mqm root 
   # Find directory containing .deb files
   RUN export DIR_DEB=$(find ${DIR_EXTRACT} -name "*.deb" -printf "%h\n" | sort -u | head -1) \
